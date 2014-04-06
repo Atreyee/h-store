@@ -5,7 +5,6 @@ import java.io.File;
 import org.junit.Before;
 import org.junit.Test;
 import org.voltdb.SysProcSelector;
-import org.voltdb.VoltSystemProcedure;
 import org.voltdb.VoltTable;
 import org.voltdb.catalog.Procedure;
 import org.voltdb.catalog.Site;
@@ -14,7 +13,6 @@ import org.voltdb.client.Client;
 import org.voltdb.client.ClientResponse;
 import org.voltdb.exceptions.UnknownBlockAccessException;
 import org.voltdb.jni.ExecutionEngine;
-import org.voltdb.sysprocs.Statistics;
 import org.voltdb.utils.VoltTableUtil;
 
 import edu.brown.BaseTestCase;
@@ -24,6 +22,7 @@ import edu.brown.benchmark.ycsb.YCSBProjectBuilder;
 import edu.brown.catalog.CatalogUtil;
 import edu.brown.hstore.Hstoreservice.Status;
 import edu.brown.hstore.conf.HStoreConf;
+import edu.brown.hstore.txns.LocalTransaction;
 import edu.brown.profilers.AntiCacheManagerProfiler;
 import edu.brown.utils.CollectionUtil;
 import edu.brown.utils.FileUtil;
@@ -366,4 +365,17 @@ public class TestAntiCacheManager extends BaseTestCase {
         }
         assertTrue(failed);
     }   
+
+    @Test
+    public void testQueueingOfTransaction() throws Exception {
+    	AntiCacheManager manager = hstore_site.getAntiCacheManager();
+        short block_ids[] = new short[]{ 1111 };
+        int tuple_offsets[] = new int[]{0};
+        int partition_id = 0;
+        this.hstore_conf.site.anticache_profiling = false;
+        LocalTransaction txn = MockHStoreSite.makeLocalTransaction(hstore_site);
+
+        assertTrue(manager.queue(txn, partition_id, catalog_tbl, block_ids, tuple_offsets));
+
+    }
 }
