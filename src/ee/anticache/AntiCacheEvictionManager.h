@@ -48,9 +48,11 @@ public:
     bool removeTuple(PersistentTable* table, TableTuple* tuple); 
 
     Table* evictBlock(PersistentTable *table, long blockSize, int numBlocks);
+    bool evictBlockToDisk(PersistentTable *table, const long block_size, int num_blocks);
     Table* evictBlockInBatch(PersistentTable *table, PersistentTable *childTable, long blockSize, int numBlocks);
     Table* readBlocks(PersistentTable *table, int numBlocks, int16_t blockIds[], int32_t tuple_offsets[]);
-    
+    bool mergeUnevictedTuples(PersistentTable *table);
+    bool readEvictedBlock(PersistentTable *table, int16_t block_id, int32_t tuple_offset);
     //int numTuplesInEvictionList(); 
     
 protected:
@@ -61,7 +63,7 @@ protected:
     Table *m_readResultTable;
     
     bool removeTupleSingleLinkedList(PersistentTable* table, uint32_t removal_id);
-    bool removeTupleDoubleLinkedList(PersistentTable* table, TableTuple* tuple_to_remove, uint32_t removal_id);
+    bool removeTupleDoubleLinkedList(PersistentTable* table, uint32_t removal_id);
     
     void printLRUChain(PersistentTable* table, int max, bool forward);
     char *itoa(uint32_t i);
