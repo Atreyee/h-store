@@ -383,16 +383,4 @@ public class TestAntiCacheManager extends BaseTestCase {
         assertTrue(failed);
     }   
 
-    @Test
-    public void testQueueingOfTransaction() throws Exception {
-    	AntiCacheManager manager = hstore_site.getAntiCacheManager();
-        short block_ids[] = new short[]{ 1111 };
-        int tuple_offsets[] = new int[]{0};
-        int partition_id = 0;
-        this.hstore_conf.site.anticache_profiling = false;
-        LocalTransaction txn = MockHStoreSite.makeLocalTransaction(hstore_site);
-
-        assertTrue(manager.queue(txn, partition_id, catalog_tbl, block_ids, tuple_offsets));
-
-    }
 }
